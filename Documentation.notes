@@ -1,0 +1,27 @@
+-----------------------------------------------------------
+    Overview
+-----------------------------------------------------------
+
+The web app is an AI-powered platform that makes it easy for developers and non-developers to create custom APIs for their projects. Users can enter details of their desired API, and the app will generate the code. The app provides real-time error handling and automatic documentation generation for the generated API. Users can customize the API endpoints, parameters, and responses, and download the generated code and documentation for offline use. The generated code is optimized for performance and scalability.
+
+-----------------------------------------------------------
+    Tech Stack
+-----------------------------------------------------------
+
+JavaScript as the primary programming language
+React for building the front-end
+Node.js for building the back-end
+GraphQL for managing the API requests and responses
+MongoDB for storing user data
+ChatGPT for the AI-powered code generation.
+
+-----------------------------------------------------------
+    Dependencies
+-----------------------------------------------------------
+
+Once Node.js is installed, you will need to install the required dependencies for the project. These can be installed using npm or yarn, depending on your preference. The dependencies you will need are:
+
+express: A web framework for Node.js
+graphql: A query language for APIs
+express-graphql: A middleware for creating GraphQL APIs with Express
+mongoose: A library for interacting with MongoDB
