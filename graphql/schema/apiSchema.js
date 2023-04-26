@@ -34,5 +34,7 @@ input: ApiInput {
 }
 
 
-`
+`;
+
+module.exports = typeDefs;
 
