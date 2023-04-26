@@ -1,29 +1,28 @@
-const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
+const express = requrie('express')
+const { ApolloServer } = require('apollo-server-express')
 const mongoose = require('mongoose')
+const dotenv = require('dotenv')
+const typeDefs = require('./graphql/schema')
+const resolvers = require('./graphql/resolvers')
 
-const MONGODB = "mongodb+srv://aradhyas8:Xfactor%40021@cluster0.dmb4s9g.mongodb.net/?retryWrites=true&w=majority"
+dotenv.config();
 
 
+mongoose.connect(process.env.MONGO_URI, { newUrlParser: true, useUnifiedTopology: true })
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.log(err));
 
-//ApolloServer
-// typeDefs: GraphQL TypeDefinitions
-//Resolvers : How do we resolve queries/mutations.
 
-const typeDefs = require('./graphql/typeDefs');
-const resolvers = require('./graphql/resolvers');
-
+const app = express();
 
 const server = new ApolloServer({
     typeDefs,
-    resolvers
-});
+    resolvers,
+    context : ({ req }) => ({ req })
+})
 
-mongoose.connect(MONGODB,{useNewUrlParser:true})
-.then(()=>{
-    console.log('MONGO DB is connected');
-    return server.listen({port:5000});
-})
-.then((res)=>{
-    console.log(`Server is running at ${res.url}`);
-})
+server.applyMiddleware({ app });
+
+app.listen(5000, ()=> {
+    console.log('Server is runinng on port 5000')
+});
