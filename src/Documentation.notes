@@ -1,0 +1,31 @@
+Backend Architecture:
+controllers: Contains the business logic for handling API requests and responses.
+database: Contains the files related to the database connection and models.
+graphql: Contains GraphQL schema and resolvers for handling API-related GraphQL queries and mutations.
+middleware: Contains middleware functions such as authentication and validation.
+utils: Contains utility functions, such as the code generator.
+routes: Contains the Express routes for handling different endpoints.
+app.js: The main entry point of the application, where everything is initialized.
+-----------------------------------------------------------
+   User Flow
+-----------------------------------------------------------
+User Flow:
+a. User Authentication:
+
+Users can sign up and log in to the web application.
+Use authMiddleware.js to verify and authenticate user sessions.
+b. Creating Custom APIs:
+
+Users enter the desired API details into the web app.
+The GraphQL mutation creates a new API instance using apiController.js, which stores the API details in the database via the apiModel.js schema.
+The codeGenerator.js utility generates the code for the custom API using the stored details.
+c. Customizing API Endpoints, Parameters, and Responses:
+
+Users can modify the API details through the web app.
+The GraphQL mutation updates the API instance using apiController.js, which updates the database record accordingly.
+The codeGenerator.js utility regenerates the code for the custom API using the updated details.
+d. Downloading the Generated Code:
+
+Users can download the generated code as a ZIP file.
+The codeGenerator.js utility compiles the code into a ZIP file and sends it to the client for download.
+To ensure that the generated code is optimized for performance and scalability, consider using best practices such as asynchronous operations, proper error handling, caching, and pagination. Additionally, you can integrate tools like ESLint and Prettier to enforce code quality standards.
