@@ -86,7 +86,10 @@ const typeDefs = gql `
         updateProject(id: ID!, input: ProjectInput!): Project!
         deleteProject(id: ID!): Project!
         createApiConfig(projectId: ID!, input: ApiConfigInput!): ApiConfig!
-        updateApiConfig(id: ID!)
+        updateApiConfig(id: ID!, input: ApiConfigInput!): ApiConfig!
+        deleteApiConfig(id: ID!): ApiConfig!
     }
 
-`
+`;
+
+module.exports = typeDefs;
