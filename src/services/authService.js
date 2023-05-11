@@ -30,4 +30,17 @@ const signIn = async (email, password) => {
     return { user, token };
 };
 
-module.exports = { generateAuthToken, signIn };
+const getUserIdFromToken = (token) => {
+    try {
+      if (!token) {
+        return null;
+      }
+  
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return decoded._id;
+    } catch (error) {
+      return null;
+    }
+  };
+
+module.exports = { generateAuthToken, signIn, getUserIdFromToken };
