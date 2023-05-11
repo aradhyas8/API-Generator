@@ -73,10 +73,10 @@ const typeDefs = gql `
     }
 
     type Query {
-        me: Userproject(id: ID!): Project
+        me: User project(id: ID!): Project
         projects: [Project]
         apiConfig(id: ID!): ApiConfig
-        apiCOnfigs: [ApiConfig]
+        apiConfigs: [ApiConfig]
     }
 
     type Mutation {

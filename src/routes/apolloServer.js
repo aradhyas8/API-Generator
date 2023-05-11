@@ -1,7 +1,7 @@
 const { ApolloServer } = require('apollo-server-express');
-const typeDefs = require('./graphql/typeDefs');
-const resolvers = require('./graphql/resolvers');
-const { getUserIdFromToken } = require('./services/AuthService');
+const typeDefs = require('../graphql/schemas/typeDefs');
+const resolvers = require('../graphql/resolvers/resolvers');
+const { getUserIdFromToken } = require('../services/authService');
 
 const apolloServer = new ApolloServer({
   typeDefs,
