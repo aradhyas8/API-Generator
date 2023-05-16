@@ -1,7 +1,7 @@
-const { UserService } = require('../../services/userService.js');
+const  UserService  = require('../../services/userService.js');
 const  AuthService = require('../../services/authService.js');
-const { ApiConfigService } = require('../../services/apiConfigService.js');
-const { ProjectService } = require('../../services/projectService.js');
+const ApiConfigService  = require('../../services/apiConfigService.js');
+const  ProjectService  = require('../../services/projectService.js');
 const { signUp, signIn } = require('../../services/authService.js');
 
 

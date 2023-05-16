@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+
 
 const generateAuthToken = async (user) => {
   const token = jwt.sign(
@@ -25,7 +26,7 @@ const signUp = async (name, email, password) => {
     throw new Error('User already exists');
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = password
 
   const user = new User({
     name,
@@ -39,21 +40,25 @@ const signUp = async (name, email, password) => {
 };
 
 const signIn = async (email, password) => {
-    const user = await User.findOne({ email });
+  const user = await User.findOne({ email });
 
-    if(!user) {
-        throw new Error('Unable to login');
-    }
+  if (!user) {
+    throw new Error('User not found');
+  }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+  console.log('Entered password:', password);
+  console.log('Stored password:', user.password);
+  const isMatch = await bcrypt.compare(password, user.password);
+  console.log('Is match:', isMatch);
 
-    if(!isMatch) {
-        throw new Error('Unable to login, wrong Password');
-    }
+  if (!isMatch) {
+    throw new Error('Unable to login, wrong Password');
+  }
 
-    const token = await generateAuthToken(user);
-    return { user, token };
+  const token = await generateAuthToken(user);
+  return { user, token };
 };
+
 
 const getUserIdFromToken = (token) => {
     try {

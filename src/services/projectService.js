@@ -1,10 +1,19 @@
 const Project = require('../models/Project');
 
 const createProject = async (userId, projectData) => {
-    const project = new Project({ ...projectData, user: userId });
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+  
+    const project = new Project({
+      ...projectData,
+      user: userId,
+    });
+  
     await project.save();
+  
     return project;
-};
+  };
 
 const updateProject = async (projectId, updates) => {
     const project = await Project.findById(projectId);
