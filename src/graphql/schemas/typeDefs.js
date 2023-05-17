@@ -52,6 +52,7 @@ const typeDefs = gql `
 
     input ApiConfigInput {
         endpoints: [EndpointInput]!
+        projectName: String!
     }
 
     input EndpointInput {

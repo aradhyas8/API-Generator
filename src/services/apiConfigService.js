@@ -44,7 +44,7 @@ const getApiConfigsByProject = async (projectId) => {
     if (!apiConfigs) {
       throw new Error('No API configurations found for this project');
     }
-    return apiConfig;
+    return apiConfigs;
 };
 
 

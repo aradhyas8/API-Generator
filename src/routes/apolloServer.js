@@ -7,12 +7,14 @@ const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req }) => {
-    const token = req.headers.authorization || '';
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace('Bearer ', '');
     const userId = getUserIdFromToken(token);
     console.log("User ID:", userId);
 
     return { userId };
   },
 });
+
 
 module.exports = apolloServer;
