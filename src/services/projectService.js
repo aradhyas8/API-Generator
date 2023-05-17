@@ -7,7 +7,7 @@ const createProject = async (userId, projectData) => {
   
     const project = new Project({
       ...projectData,
-      user: userId,
+      userId: userId,
     });
   
     await project.save();

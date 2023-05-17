@@ -67,6 +67,7 @@ const getUserIdFromToken = (token) => {
       }
   
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("Decoded token:", decoded);
       return decoded._id;
     } catch (error) {
       return null;

@@ -56,7 +56,7 @@ const typeDefs = gql `
 
     input EndpointInput {
         path: String!
-        methid: String!
+        method: String!
         parameters: [ParameterInput]
         response: [ResponseInput]
     }

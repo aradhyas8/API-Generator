@@ -9,6 +9,7 @@ const apolloServer = new ApolloServer({
   context: ({ req }) => {
     const token = req.headers.authorization || '';
     const userId = getUserIdFromToken(token);
+    console.log("User ID:", userId);
 
     return { userId };
   },
