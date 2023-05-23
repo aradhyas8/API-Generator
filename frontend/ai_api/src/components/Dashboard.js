@@ -1,40 +1,39 @@
-// Dashboard.js
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useQuery, gql } from '@apollo/client';
+
+const GET_PROJECTS = gql`
+  query GetProjects {
+    projects {
+      id
+      name
+      user {
+        id
+        name
+      }
+    }
+  }
+`;
 
 function Dashboard() {
-    const [apis, setApis] = useState([]);
+  const { loading, error, data } = useQuery(GET_PROJECTS);
 
-    // Fetch APIs from backend when component mounts
-    useEffect(() => {
-        fetchApis();
-    }, []);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
 
-    const fetchApis = async () => {
-        try {
-            // Fetch APIs from your backend
-            // For example:
-            const response = await fetch('/api/apis');
-            const data = await response.json();
-
-            setApis(data);
-        } catch (error) {
-            console.error('Failed to fetch APIs:', error);
-        }
-    };
-
-    return (
-        <div className="p-10">
-            <h1 className="text-4xl mb-5">API Dashboard</h1>
-            <ul className="space-y-4">
-                {apis.map(api => (
-                    <li key={api._id} className="border p-4 rounded-lg">
-                        <h2 className="text-2xl mb-2">{api.endpoint}</h2>
-                        <p>Method: {api.method}</p>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+  return (
+    <div className="p-10">
+      <h1 className="text-4xl mb-5">API Dashboard</h1>
+      <ul className="space-y-4">
+        {data.projects.map(project => (
+          <li key={project.id} className="border p-4 rounded-lg">
+            <h2 className="text-2xl mb-2">{project.name}</h2>
+            <p>User ID: {project.user.id}</p>
+            <p>User Name: {project.user.name}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 export default Dashboard;
