@@ -13,6 +13,8 @@ const resolvers = {
       ApiConfigService.getApiConfigById(id),
     apiConfigs: (parent, args, context) =>
       ApiConfigService.getApiConfigsbyProject(args.projectId),
+      getProjectsByUser: (parent, args, context)=> 
+      ProjectService.getProjectsByUser(context.userId),
   },
 
   Mutation: {

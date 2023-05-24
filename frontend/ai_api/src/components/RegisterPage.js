@@ -15,11 +15,11 @@ const REGISTER = gql`
 `;
 
 function RegisterPage() {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [registerUser, { data }] = useMutation(REGISTER);
 
-  const onSubmit = (data) => {
-    registerUser({ variables: data });
+  const onSubmit = (formData) => {
+    registerUser({ variables: formData });
   };
 
   if (data) {
@@ -34,11 +34,11 @@ function RegisterPage() {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="email" className="block mb-1">Email</label>
-        <input name="email" type="email" ref={register({ required: 'Email is required' })} className="block mb-2 w-full" />
+        <input {...register('email', { required: 'Email is required' })} type="email" className="block mb-2 w-full" />
         {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
         <label htmlFor="password" className="block mb-1">Password</label>
-        <input name="password" type="password" ref={register({ required: 'Password is required' })} className="block mb-2 w-full" />
+        <input {...register('password', { required: 'Password is required' })} type="password" className="block mb-2 w-full" />
         {errors.password && <p className="text-red-500">{errors.password.message}</p>}
 
         <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white">Register</button>

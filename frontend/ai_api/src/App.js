@@ -1,20 +1,24 @@
-import Home from './components/Home'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './components/Home';
+import LoginPage from './components/LoginPage';
+import Dashboard from './components/Dashboard';
 import APIPage from './components/APIPage'
-import Dashboard from './components/Dashboard'
-import DocumentationPage from './components/DocumentationPage'
-import ErrorPage from './components/ErrorPage'
-import LoginPage from './components/LoginPage'
-import RegisterPage from './components/RegisterPage'
-import Settings from './components/Settings'
-import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import ProjectCreation from './components/ProjectCreation';
+
 
 const App = () => {
   return (
-    <BrowserRouter>
-    <Home />
-    </BrowserRouter>
-  )
-}
 
-export default App
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/projectCreation" element={<ProjectCreation />} />
+        <Route path="/apiPage" element={<APIPage />} />
+      </Routes>
+
+  );
+};
+
+export default App;

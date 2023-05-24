@@ -92,6 +92,7 @@ const typeDefs = gql`
     projects: [Project]
     apiConfig(id: ID!): ApiConfig
     apiConfigs: [ApiConfig]
+    getProjectsByUser: [Project]
   }
 
   type Mutation {

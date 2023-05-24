@@ -1,58 +1,103 @@
-// APIPage.js
 import React, { useState } from 'react';
+import { useMutation, gql } from '@apollo/client';
+
+const CREATE_PROJECT_MUTATION = gql`
+    mutation createProject($name: String!, $description: String!) {
+        createProject(name: $name, description: $description) {
+            id
+            name
+        }
+    }
+`;
+
+const CREATE_API_CONFIG_MUTATION = gql`
+    mutation createApiConfig($projectId: ID!, $input: ApiConfigInput!) {
+        createApiConfig(projectId: $projectId, input: $input) {
+            id
+            endpoints {
+              path
+            }
+        }
+    }
+`;
 
 function APIPage() {
+    const [createProject, { data }] = useMutation(CREATE_PROJECT_MUTATION);
+    const [createApiConfig] = useMutation(CREATE_API_CONFIG_MUTATION);
+    const [project, setProject] = useState({ name: '', description: '' });
     const [apiConfig, setApiConfig] = useState({
-        endpoint: '',
-        method: '',
-        description: '',
-        parameters: [],
-        responses: []
+        endpoints: [{
+            path: '',
+            method: '',
+            response: [{
+                key: '',
+                type: '',
+                properties: [{
+                    key: '',
+                    type: ''
+                }]
+            }]
+        }]
     });
 
-    const handleInputChange = (event) => {
-        setApiConfig({
-            ...apiConfig,
+    const handleProjectChange = (event) => {
+        setProject({
+            ...project,
             [event.target.name]: event.target.value
         });
     };
 
-    // Submit form
-    const handleSubmit = (event) => {
+    const handleApiConfigChange = (event, endpointIndex, responseIndex, propertyIndex) => {
+        const updatedApiConfig = { ...apiConfig };
+        if (propertyIndex !== undefined) {
+            updatedApiConfig.endpoints[endpointIndex].response[responseIndex].properties[propertyIndex][event.target.name] = event.target.value;
+        } else if (responseIndex !== undefined) {
+            updatedApiConfig.endpoints[endpointIndex].response[responseIndex][event.target.name] = event.target.value;
+        } else {
+            updatedApiConfig.endpoints[endpointIndex][event.target.name] = event.target.value;
+        }
+        setApiConfig(updatedApiConfig);
+    };
+
+    const handleProjectSubmit = (event) => {
         event.preventDefault();
-        console.log(apiConfig);
-        // Add your API call here
+        createProject({ variables: project });
+    };
+
+    const handleApiConfigSubmit = (event) => {
+        event.preventDefault();
+        createApiConfig({ variables: { projectId: data?.createProject?.id, input: apiConfig } });
     };
 
     return (
         <div className="p-10">
-            <h1 className="text-4xl mb-5">API Configuration</h1>
-            <form className="space-y-5" onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="endpoint" className="block mb-1">Endpoint</label>
-                    <input type="text" id="endpoint" name="endpoint" onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" />
-                </div>
-                <div>
-                    <label htmlFor="method" className="block mb-1">Method</label>
-                    <select id="method" name="method" onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-md">
-                        <option value="">Select method</option>
-                        <option value="GET">GET</option>
-                        <option value="POST">POST</option>
-                        <option value="PUT">PUT</option>
-                        <option value="DELETE">DELETE</option>
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="description" className="block mb-1">Description</label>
-                    <textarea id="description" name="description" onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" />
-                </div>
-                {/* 
-                    To handle parameters and responses, you may want to have 
-                    some kind of dynamic form fields where you can add or remove fields on the fly.
-                    This is a bit more complex and is out of scope for this example.
-                */}
-                <button type="submit" className="px-6 py-2 text-white bg-blue-600 rounded-full hover:bg-blue-500">Save</button>
-            </form>
+            {/* ... existing project creation form ... */}
+
+            {data?.createProject && (
+                <>
+                    <h1 className="text-4xl mb-5">API Configuration for {data.createProject.name}</h1>
+                    <form className="space-y-5" onSubmit={handleApiConfigSubmit}>
+                        {apiConfig.endpoints.map((endpoint, endpointIndex) => (
+                            <div key={endpointIndex}>
+                                {/* ... existing endpoint form fields ... */}
+                                {endpoint.response.map((response, responseIndex) => (
+                                    <div key={responseIndex}>
+                                        {/* ... existing response form fields ... */}
+                                        {response.properties.map((property, propertyIndex) => (
+                                            <div key={propertyIndex}>
+                                                {/* Form fields for property key and type */}
+                                                <input type="text" name="key" value={property.key} onChange={e => handleApiConfigChange(e, endpointIndex, responseIndex, propertyIndex)} />
+                                                <input type="text" name="type" value={property.type} onChange={e => handleApiConfigChange(e, endpointIndex, responseIndex, propertyIndex)} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                        <button type="submit" className="px-6 py-2 text-white bg-blue-600 rounded-full hover:bg-blue-500">Create API Configuration</button>
+                    </form>
+                </>
+            )}
         </div>
     );
 }

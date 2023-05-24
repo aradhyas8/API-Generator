@@ -49,7 +49,7 @@ const getProjectById = async (projectId) => {
 };
 
 const getProjectsByUser = async (userId) => {
-    const projects = await Project.find({ user: userId });
+    const projects = await Project.find({ userId: userId });
 
     if(!projects) {
         throw new Error('No projects found for this user');
