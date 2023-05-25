@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
+import { Link } from 'react-router-dom';
 
 const CREATE_PROJECT = gql`
   mutation createProject($name: String!, $description: String) {
@@ -15,6 +16,7 @@ function ProjectCreation() {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [projectCreated, setProjectCreated] = useState(false);
   const token = localStorage.getItem('token'); // Retrieve the token from localStorage
   const [createProject] = useMutation(CREATE_PROJECT, {
     context: {
@@ -23,6 +25,8 @@ function ProjectCreation() {
       },
     },
   });
+
+  const [projectId, setProjectId] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -38,6 +42,8 @@ function ProjectCreation() {
         const { id, name } = response.data.createProject;
         console.log(`Project created with ID: ${id} and Name: ${name}`);
         // Do something with the created project, such as updating the UI or navigating to a different page
+        setProjectId(id);
+        setProjectCreated(true);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -76,13 +82,24 @@ function ProjectCreation() {
 
         {error && <p>Error: {error}</p>}
 
-        <button
-          type="submit"
-          className="mt-4 px-4 py-2 bg-blue-500 text-white"
-          disabled={loading}
-        >
-          {loading ? 'Loading...' : 'Create Project'}
-        </button>
+        {!projectCreated ? (
+          <button
+            type="submit"
+            className="mt-4 px-4 py-2 bg-blue-500 text-white"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Create Project'}
+          </button>
+        ) : (
+          <>
+            <p>Project Created</p>
+            <div className="flex">
+              <Link to={{pathname:"/apiPage", state:{projectId},}}className="mt-4 px-4 py-2 bg-blue-500 text-white">
+                Head to API Page
+              </Link>
+            </div>
+          </>
+        )}
       </form>
     </div>
   );
