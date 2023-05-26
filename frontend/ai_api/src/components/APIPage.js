@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
 
 const CREATE_API_CONFIG = gql`
@@ -12,9 +13,12 @@ const CREATE_API_CONFIG = gql`
   }
 `;
 
-function APIPage() {
+
+
+function APIPage(props) {
+  const incomingProjectId = props.location.state?.projectId;
   const [apiConfig, setApiConfig] = useState({
-    projectId: '',
+    projectId: incomingProjectId,
     projectName: '',
     endpoints: [
       {
@@ -25,6 +29,12 @@ function APIPage() {
       }
     ]
   });
+
+  useEffect(()=> {
+    setApiConfig((prevState)=>({
+        ...prevState, projectId: incomingProjectId
+    })); 
+  }, [incomingProjectId]);
 
   const [createApiConfig] = useMutation(CREATE_API_CONFIG);
 
