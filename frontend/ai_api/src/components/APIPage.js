@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
+import { useParams } from 'react-router-dom';
 
 const CREATE_API_CONFIG = gql`
   mutation CreateApiConfig($projectId: ID!, $input: ApiConfigInput!) {
@@ -13,13 +14,11 @@ const CREATE_API_CONFIG = gql`
   }
 `;
 
-//function APIPage(props) {
+
 
 function APIPage(props) {
-  const incomingProjectId = props.location.state?.projectId;
+  const { projectId } = useParams();
   const [apiConfig, setApiConfig] = useState({
-    projectId: incomingProjectId,
-    projectName: '',
     endpoints: [
       {
         path: '',
@@ -30,11 +29,6 @@ function APIPage(props) {
     ]
   });
 
-  useEffect(()=> {
-    setApiConfig((prevState)=>({
-        ...prevState, projectId: incomingProjectId
-    })); 
-  }, [incomingProjectId]);
 
   const [createApiConfig] = useMutation(CREATE_API_CONFIG);
 
@@ -85,9 +79,8 @@ function APIPage(props) {
     try {
       const response = await createApiConfig({
         variables: {
-          projectId: apiConfig.projectId,
+          projectId: projectId,
           input: {
-            projectName: apiConfig.projectName,
             endpoints: apiConfig.endpoints
           }
         }
@@ -104,34 +97,6 @@ function APIPage(props) {
     <div className="p-10">
       <h1 className="text-4xl mb-5">API Configuration</h1>
       <form className="space-y-5" onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="projectId" className="block mb-1">
-          Project ID
-        </label>
-        <input
-          type="text"
-          id="projectId"
-          name="projectId"
-          value={apiConfig.projectId}
-          onChange={handleInputChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="projectName" className="block mb-1">
-          Project Name
-        </label>
-        <input
-          type="text"
-          id="projectName"
-          name="projectName"
-          value={apiConfig.projectName}
-          onChange={handleInputChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          required
-        />
-      </div>
         {apiConfig.endpoints.map((endpoint, index) => (
           <div key={index}>
             <h3>Endpoint {index + 1}</h3>

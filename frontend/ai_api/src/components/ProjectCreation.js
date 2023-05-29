@@ -94,7 +94,7 @@ function ProjectCreation() {
           <>
             <p>Project Created</p>
             <div className="flex">
-              <Link to={{pathname:"/apiPage", state:{projectId},}}className="mt-4 px-4 py-2 bg-blue-500 text-white">
+              <Link to={{pathname:`/apiPage/${projectId}`}}className="mt-4 px-4 py-2 bg-blue-500 text-white">
                 Head to API Page
               </Link>
             </div>
