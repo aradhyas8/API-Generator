@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
-import { useMutation, gql } from '@apollo/client';
-import { useParams } from 'react-router-dom';
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { useMutation, gql } from "@apollo/client";
+import { useParams } from "react-router-dom";
 
 const CREATE_API_CONFIG = gql`
   mutation CreateApiConfig($projectId: ID!, $input: ApiConfigInput!) {
@@ -14,41 +14,57 @@ const CREATE_API_CONFIG = gql`
   }
 `;
 
-
-
 function APIPage(props) {
+
+  const token = localStorage.getItem('token');
+  const userID = localStorage.getItem('userID');
   const { projectId } = useParams();
+  const [createApiConfig, { loading, error, data }] =
+    useMutation(CREATE_API_CONFIG, 
+      {
+        context: {
+          headers: {
+            authorization: token ? 'Bearer ${token}': '',
+            userid: userID || '',
+          }
+        }
+      });
   const [apiConfig, setApiConfig] = useState({
     endpoints: [
       {
-        path: '',
-        method: '',
-        parameters: [{ name: '', type: '', required: false }],
-        response: [{ key: '', type: '' }]
-      }
-    ]
+        path: "",
+        method: "",
+        parameters: [{ name: "", type: "", required: false }],
+        response: [{ key: "", type: "" }],
+      },
+    ],
   });
 
-
-  const [createApiConfig] = useMutation(CREATE_API_CONFIG);
-
-  const handleInputChange = (event, index, field, subIndex) => {
-    const { name, value } = event.target;
-
+  const handleInputChange = (
+    event,
+    index,
+    field,
+    subFieldIndex = null,
+    subFieldName = null
+  ) => {
+    const value =
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
+  
     setApiConfig((prevState) => {
       const updatedConfig = { ...prevState };
-
-      if (subIndex !== undefined) {
-        updatedConfig.endpoints[index][field][subIndex][name] = value;
-      } else if (field) {
-        updatedConfig.endpoints[index][name] = value;
+  
+      if (subFieldIndex !== null && subFieldName !== null) {
+        updatedConfig.endpoints[index][field][subFieldIndex][subFieldName] = value;
       } else {
-        updatedConfig[name] = value;
+        updatedConfig.endpoints[index][field] = value;
       }
-
+  
       return updatedConfig;
     });
   };
+  
 
   const addField = (index, field) => {
     setApiConfig((prevState) => {
@@ -81,14 +97,14 @@ function APIPage(props) {
         variables: {
           projectId: projectId,
           input: {
-            endpoints: apiConfig.endpoints
-          }
-        }
+            endpoints: apiConfig.endpoints,
+          },
+        },
       });
 
       console.log(response.data); // Handle the response as needed
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       // Handle the error as needed
     }
   };
@@ -106,10 +122,10 @@ function APIPage(props) {
               </label>
               <input
                 type="text"
-                id={`path-${index}`}
-                name={`path-${index}`}
+                id="path"
+                name="path"
                 value={endpoint.path}
-                onChange={(e) => handleInputChange(e, index, 'endpoints', 'path')}
+                onChange={(e) => handleInputChange(e, index, "path")}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 required
               />
@@ -119,10 +135,10 @@ function APIPage(props) {
                 Method
               </label>
               <select
-                id={`method-${index}`}
-                name={`method-${index}`}
+                id="method"
+                name="method"
                 value={endpoint.method}
-                onChange={(e) => handleInputChange(e, index, 'endpoints', 'method')}
+                onChange={(e) => handleInputChange(e, index, "method")}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 required
               >
@@ -139,37 +155,57 @@ function APIPage(props) {
                 <div key={paramIndex}>
                   <input
                     type="text"
-                    name={`paramName-${index}-${paramIndex}`}
+                    name="name"
                     placeholder="Parameter Name"
                     value={param.name}
                     onChange={(e) =>
-                      handleInputChange(e, index, 'parameters', paramIndex, 'name')
+                      handleInputChange(
+                        e,
+                        index,
+                        "parameters",
+                        paramIndex,
+                        "name"
+                      )
                     }
                     className="mr-2"
                   />
                   <input
                     type="text"
-                    name={`paramType-${index}-${paramIndex}`}
+                    name="type"
                     placeholder="Parameter Type"
                     value={param.type}
                     onChange={(e) =>
-                      handleInputChange(e, index, 'parameters', paramIndex, 'type')
+                      handleInputChange(
+                        e,
+                        index,
+                        "parameters",
+                        paramIndex,
+                        "type"
+                      )
                     }
                     className="mr-2"
                   />
                   <input
                     type="checkbox"
-                    name={`paramRequired-${index}-${paramIndex}`}
+                    name="required"
                     checked={param.required}
                     onChange={(e) =>
-                      handleInputChange(e, index, 'parameters', paramIndex, 'required')
+                      handleInputChange(
+                        e,
+                        index,
+                        "parameters",
+                        paramIndex,
+                        "required"
+                      )
                     }
                     className="mr-2"
                   />
-                  <label htmlFor={`paramRequired-${index}-${paramIndex}`}>Required</label>
+                  <label htmlFor={`paramRequired-${index}-${paramIndex}`}>
+                    Required
+                  </label>
                   <button
                     type="button"
-                    onClick={() => removeField(index, 'parameters', paramIndex)}
+                    onClick={() => removeField(index, "parameters", paramIndex)}
                   >
                     Remove Parameter
                   </button>
@@ -177,7 +213,7 @@ function APIPage(props) {
               ))}
               <button
                 type="button"
-                onClick={() => addField(index, 'parameters')}
+                onClick={() => addField(index, "parameters")}
               >
                 Add Parameter
               </button>
@@ -188,36 +224,47 @@ function APIPage(props) {
                 <div key={responseIndex}>
                   <input
                     type="text"
-                    name={`responseKey-${index}-${responseIndex}`}
+                    name="key"
                     placeholder="Response Key"
                     value={response.key}
                     onChange={(e) =>
-                      handleInputChange(e, index, 'response', responseIndex, 'key')
+                      handleInputChange(
+                        e,
+                        index,
+                        "response",
+                        responseIndex,
+                        "key"
+                      )
                     }
                     className="mr-2"
                   />
                   <input
                     type="text"
-                    name={`responseType-${index}-${responseIndex}`}
+                    name="type"
                     placeholder="Response Type"
                     value={response.type}
                     onChange={(e) =>
-                      handleInputChange(e, index, 'response', responseIndex, 'type')
+                      handleInputChange(
+                        e,
+                        index,
+                        "response",
+                        responseIndex,
+                        "type"
+                      )
                     }
                     className="mr-2"
                   />
                   <button
                     type="button"
-                    onClick={() => removeField(index, 'response', responseIndex)}
+                    onClick={() =>
+                      removeField(index, "response", responseIndex)
+                    }
                   >
                     Remove Response
                   </button>
                 </div>
               ))}
-              <button
-                type="button"
-                onClick={() => addField(index, 'response')}
-              >
+              <button type="button" onClick={() => addField(index, "response")}>
                 Add Response
               </button>
             </div>
