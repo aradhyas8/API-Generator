@@ -5,8 +5,9 @@ import { useParams } from "react-router-dom";
 
 const CREATE_API_CONFIG = gql`
   mutation CreateApiConfig($projectId: ID!, $input: ApiConfigInput!) {
-    createApiConfig(projectId: $projectId, input: $input) {
+         createApiConfig(projectId: $projectId, input: $input) {
       id
+      projectName
       endpoints {
         path
       }
@@ -17,19 +18,18 @@ const CREATE_API_CONFIG = gql`
 function APIPage(props) {
 
   const token = localStorage.getItem('token');
-  const userID = localStorage.getItem('userID');
   const { projectId } = useParams();
   const [createApiConfig, { loading, error, data }] =
     useMutation(CREATE_API_CONFIG, 
       {
         context: {
           headers: {
-            authorization: token ? 'Bearer ${token}': '',
-            userid: userID || '',
+            authorization: token ? `Bearer ${token}`: '',
           }
         }
       });
   const [apiConfig, setApiConfig] = useState({
+    projectName: "",
     endpoints: [
       {
         path: "",
@@ -97,6 +97,7 @@ function APIPage(props) {
         variables: {
           projectId: projectId,
           input: {
+            projectName: apiConfig.projectName,
             endpoints: apiConfig.endpoints,
           },
         },
@@ -113,6 +114,21 @@ function APIPage(props) {
     <div className="p-10">
       <h1 className="text-4xl mb-5">API Configuration</h1>
       <form className="space-y-5" onSubmit={handleSubmit}>
+      <div>
+  <label htmlFor="projectName" className="block mb-1">
+    Project Name
+  </label>
+  <input
+    type="text"
+    id="projectName"
+    name="projectName"
+    value={apiConfig.projectName}
+    onChange={(e) => setApiConfig({...apiConfig, projectName: e.target.value})}
+    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+    required
+  />
+</div>
+
         {apiConfig.endpoints.map((endpoint, index) => (
           <div key={index}>
             <h3>Endpoint {index + 1}</h3>
