@@ -131,7 +131,7 @@ function APIPage(props) {
 
         {apiConfig.endpoints.map((endpoint, index) => (
           <div key={index}>
-            <h3>Endpoint {index + 1}</h3>
+            <h3>Endpoint for the API {index + 1}</h3>
             <div>
               <label htmlFor={`path-${index}`} className="block mb-1">
                 Path
