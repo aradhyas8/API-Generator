@@ -7,7 +7,9 @@ const CREATE_API_CONFIG = gql`
   mutation CreateApiConfig($projectId: ID!, $input: ApiConfigInput!) {
          createApiConfig(projectId: $projectId, input: $input) {
       id
-      projectName
+      project{
+        name
+      }
       endpoints {
         path
       }
@@ -34,8 +36,8 @@ function APIPage(props) {
       {
         path: "",
         method: "",
-        parameters: [{ name: "", type: "", required: false }],
-        response: [{ key: "", type: "" }],
+        parameters: [{ name: "default", type: "default", required: false }],
+        response: [{ key: "default", type: "default" }],
       },
     ],
   });
@@ -103,7 +105,7 @@ function APIPage(props) {
         },
       });
 
-      console.log(response.data); // Handle the response as needed
+      console.log(projectId); // Handle the response as needed
     } catch (error) {
       console.error("Error:", error);
       // Handle the error as needed
@@ -289,6 +291,7 @@ function APIPage(props) {
         <button
           type="submit"
           className="px-6 py-2 text-white bg-blue-600 rounded-full hover:bg-blue-500"
+          onClick={handleSubmit}
         >
           Save
         </button>
