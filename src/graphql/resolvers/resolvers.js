@@ -3,6 +3,8 @@ const  AuthService = require('../../services/authService.js');
 const ApiConfigService  = require('../../services/apiConfigService.js');
 const  ProjectService  = require('../../services/projectService.js');
 const { signUp, signIn } = require('../../services/authService.js');
+const { db } = require('../../models/User.js');
+const { codeGenerator } = require('../../services/CodeGenerationService.js');
 
 
 const resolvers = {
@@ -15,6 +17,11 @@ const resolvers = {
       ApiConfigService.getApiConfigsbyProject(args.projectId),
       getProjectsByUser: (parent, args, context)=> 
       ProjectService.getProjectsByUser(context.userId),
+      generateCode: async(_, { id }) => {
+        const apiConfig = await ApiConfigService.getApiConfigById(id);
+        const code = codeGenerator(apiConfig);
+        return code;
+      }
   },
 
   Mutation: {

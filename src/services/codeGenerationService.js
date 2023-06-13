@@ -1,71 +1,43 @@
-const { generate } = require('openapi-typescript-codegen');
-const ApiConfig = require('../models/ApiConfig');
+function codeGenerator(apiConfigs) {
+  let code = `
+    const express = require('express');
+    const app = express();
 
-const generateApiCode = async (apiConfigId) => {
-  const apiConfig = await ApiConfig.findById(apiConfigId);
+    app.use(express.json());
+  `;
 
-  if (!apiConfig) {
-    throw new Error('API configuration not found');
-  }
+  for (let config of apiConfigs) {
 
-  const openApiSpec = convertApiConfigToOpenApiSpec(apiConfig);
-  const generatedCode = generate(openApiSpec);
+    const endpoint = config.endpoint;
+    const method = config.method;
+    const parameters = config.parameters;
+    const response = config.response;
 
-  return generatedCode;
-};
-
-const convertApiConfigToOpenApiSpec = (apiConfig) => {
-  const openApiSpec = {
-    openapi: '3.0.0',
-    info: {
-      title: apiConfig.projectName,
-      version: '1.0.0',
-    },
-    servers: [
-      {
-        url: 'http://localhost:3000/',
-        description: 'Local server',
-      },
-    ],
-    paths: {},
-  };
-
-  apiConfig.endpoints.forEach((endpoint) => {
-    const path = endpoint.path;
-    const method = endpoint.method.toLowerCase();
-
-    if (!openApiSpec.paths[path]) {
-      openApiSpec.paths[path] = {};
+    let pramasCode = '';
+    for(let param of parameters) {
+      paramsCode += `
+      let ${param.name} = req.paramas.${param.name};
+      `;
     }
 
-    openApiSpec.paths[path][method] = {
-      parameters: endpoint.parameters.map((param) => ({
-        name: param.name,
-        in: 'query',
-        required: param.required,
-        schema: {
-          type: param.type.toLowerCase(),
-        },
-      })),
-      responses: {
-        '200': {
-          description: 'Successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: endpoint.response,
-              },
-            },
-          },
-        },
-      },
-    };
-  });
+    code += `
+        app.${method.toLowerCase()}('${endpoint}', (req, res) => {
+            ${paramsCode}
 
-  return openApiSpec;
-};
+            // Mock response
+            res.json(${JSON.stringify(response)});
+        });
+        `;
+    }
+
+    code += `
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(\`Server running on port \${PORT}\`));
+    `;
+
+    return code;
+}
 
 module.exports = {
-  generateApiCode,
+    codeGenerator,
 };

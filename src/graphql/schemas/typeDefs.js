@@ -93,6 +93,7 @@ const typeDefs = gql`
     apiConfig(id: ID!): ApiConfig
     apiConfigs: [ApiConfig]
     getProjectsByUser: [Project]
+    apiCodeGenerator(id: ID!): String
   }
 
   type Mutation {
