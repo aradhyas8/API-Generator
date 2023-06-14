@@ -94,6 +94,8 @@ function APIPage(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    console.log("projectID :", projectId);
+
     try {
       const response = await createApiConfig({
         variables: {

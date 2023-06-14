@@ -1,4 +1,5 @@
 const Project = require('../models/Project');
+const mongoose = require('mongoose');
 
 const createProject = async (userId, projectData) => {
     if (!userId) {
