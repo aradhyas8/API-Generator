@@ -94,15 +94,22 @@ function APIPage(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+ 
+
     console.log("projectID :", projectId);
 
     try {
       const response = await createApiConfig({
         variables: {
-          projectId: projectId,
+          projectId: projectId.toString(),
           input: {
             projectName: apiConfig.projectName,
             endpoints: apiConfig.endpoints,
+          },
+        },
+        context: {
+          headers: {
+            authorization: token ? `Bearer ${token}`: '',
           },
         },
       });

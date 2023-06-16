@@ -47,6 +47,7 @@ const getProjectById = async (projectId) => {
     }
 
     return project;
+    //return Project;
 };
 
 const getProjectsByUser = async (userId) => {
