@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { useEffect } from "react";
 import { useMutation, gql } from "@apollo/client";
 import { useParams } from "react-router-dom";
+
+
+
 
 const CREATE_API_CONFIG = gql`
   mutation CreateApiConfig($projectId: ID!, $input: ApiConfigInput!) {
@@ -12,6 +14,16 @@ const CREATE_API_CONFIG = gql`
       }
       endpoints {
         path
+        method
+        parameters{
+          name
+          type
+          required
+        }
+        response{
+          key
+          type
+        }
       }
     }
   }
@@ -20,6 +32,7 @@ const CREATE_API_CONFIG = gql`
 function APIPage(props) {
 
   const token = localStorage.getItem('token');
+  const [isSaved, setIsSaved] = useState(false);
   const { projectId } = useParams();
   const [createApiConfig, { loading, error, data }] =
     useMutation(CREATE_API_CONFIG, 
@@ -94,9 +107,9 @@ function APIPage(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
- 
-
     console.log("projectID :", projectId);
+
+    setIsSaved(false);
 
     try {
       const response = await createApiConfig({
@@ -105,11 +118,6 @@ function APIPage(props) {
           input: {
             projectName: apiConfig.projectName,
             endpoints: apiConfig.endpoints,
-          },
-        },
-        context: {
-          headers: {
-            authorization: token ? `Bearer ${token}`: '',
           },
         },
       });
@@ -302,7 +310,7 @@ function APIPage(props) {
           className="px-6 py-2 text-white bg-blue-600 rounded-full hover:bg-blue-500"
           onClick={handleSubmit}
         >
-          Save
+          {isSaved ? "Saved" : "Save"}
         </button>
       </form>
     </div>
