@@ -19,14 +19,14 @@ const typeDefs = gql`
   type ApiConfig {
     id: ID!
     project: Project!
-    endpoints: [Endpoint]
+    endpoints: [Endpoint!]!
   }
 
   type Endpoint {
     path: String!
     method: String!
-    parameters: [Parameter]
-    response: [Response]
+    parameters: [Parameter!]!
+    response: [Response!]!
   }
 
   type Parameter {
@@ -64,8 +64,8 @@ const typeDefs = gql`
   input EndpointInput {
     path: String!
     method: String!
-    parameters: [ParameterInput]
-    response: [ResponseInput]
+    parameters: [ParameterInput!]
+    response: [ResponseInput!]
   }
 
   input ParameterInput {
@@ -77,7 +77,7 @@ const typeDefs = gql`
   input ResponseInput {
     key: String!
     type: String!
-    properties: [PropertyInput]
+    properties: [PropertyInput!]
   }
 
   input PropertyInput {

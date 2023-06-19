@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useMutation, gql } from "@apollo/client";
 import { useParams } from "react-router-dom";
+import mongoose from "mongoose";
 
 
 
@@ -49,8 +50,8 @@ function APIPage(props) {
       {
         path: "",
         method: "",
-        parameters: [{ name: "default", type: "default", required: false }],
-        response: [{ key: "default", type: "default" }],
+        parameters: [{ name: "", type: "", required: false }],
+        response: [{ key: "", type: "" }],
       },
     ],
   });
@@ -114,7 +115,7 @@ function APIPage(props) {
     try {
       const response = await createApiConfig({
         variables: {
-          projectId: projectId.toString(),
+          projectId: mongoose.Types.ObjectId(projectId),
           input: {
             projectName: apiConfig.projectName,
             endpoints: apiConfig.endpoints,
@@ -122,10 +123,11 @@ function APIPage(props) {
         },
       });
 
-      console.log(projectId); // Handle the response as needed
+      console.log(projectId);
+      setIsSaved(true);
     } catch (error) {
       console.error("Error:", error);
-      // Handle the error as needed
+
     }
   };
 
