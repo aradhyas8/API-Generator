@@ -61,7 +61,7 @@ function APIPage(props) {
     index,
     field,
     subFieldIndex = null,
-    subFieldName = null
+    subFieldName = null,
   ) => {
     const value =
       event.target.type === "checkbox"
