@@ -115,7 +115,7 @@ function APIPage(props) {
     try {
       const response = await createApiConfig({
         variables: {
-          projectId: mongoose.Types.ObjectId(projectId),
+          projectId: new mongoose.Types.ObjectId(projectId),
           input: {
             projectName: apiConfig.projectName,
             endpoints: apiConfig.endpoints,

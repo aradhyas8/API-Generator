@@ -40,7 +40,7 @@ const deleteProject = async(projectId) => {
 };
 
 const getProjectById = async (projectId) => {
-    const project = await Project.findOne({_id: projectId});
+    const project = await Project.findOne({id: projectId});
 
     if(!project) {
         throw new Error('Project not found');
