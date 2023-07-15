@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useMutation, gql } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import mongoose from "mongoose";
+import { codeGenerator } from "../codeGenerator/codeGenerator";
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -31,9 +33,12 @@ const CREATE_API_CONFIG = gql`
 `;
 
 function APIPage(props) {
+   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
   const [isSaved, setIsSaved] = useState(false);
+  const [isCodeGenerated, setIsCodeGenerated] = useState(false);
+    const [generatedCode, setGeneratedCode] = useState("");
   const { projectId } = useParams();
   const [createApiConfig, { loading, error, data }] =
     useMutation(CREATE_API_CONFIG, 
@@ -130,25 +135,35 @@ function APIPage(props) {
 
     }
   };
+ 
+
+  const handleCodeGeneration = () => {
+    const code = codeGenerator(apiConfig.endpoints);
+    
+    navigate(`/codeDisplay/${encodeURIComponent(code)}`);
+  }
+
 
   return (
     <div className="p-10">
       <h1 className="text-4xl mb-5">API Configuration</h1>
       <form className="space-y-5" onSubmit={handleSubmit}>
-      <div>
-  <label htmlFor="projectName" className="block mb-1">
-    Project Name
-  </label>
-  <input
-    type="text"
-    id="projectName"
-    name="projectName"
-    value={apiConfig.projectName}
-    onChange={(e) => setApiConfig({...apiConfig, projectName: e.target.value})}
-    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-    required
-  />
-</div>
+        <div>
+          <label htmlFor="projectName" className="block mb-1">
+            Project Name
+          </label>
+          <input
+            type="text"
+            id="projectName"
+            name="projectName"
+            value={apiConfig.projectName}
+            onChange={(e) =>
+              setApiConfig({ ...apiConfig, projectName: e.target.value })
+            }
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
 
         {apiConfig.endpoints.map((endpoint, index) => (
           <div key={index}>
@@ -314,6 +329,15 @@ function APIPage(props) {
         >
           {isSaved ? "Saved" : "Save"}
         </button>
+        {isSaved && !isCodeGenerated && (
+          <button
+            type="button"
+            className="px-6 py-2 text-white bg-green-600 rounded-full hover:bg-green-500"
+            onClick={handleCodeGeneration}
+          >
+            Generate Code
+          </button>
+        )}
       </form>
     </div>
   );

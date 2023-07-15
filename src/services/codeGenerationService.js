@@ -7,37 +7,36 @@ function codeGenerator(apiConfigs) {
   `;
 
   for (let config of apiConfigs) {
-
-    const endpoint = config.endpoint;
+    const endpoint = config.path;
     const method = config.method;
     const parameters = config.parameters;
     const response = config.response;
 
-    let pramasCode = '';
-    for(let param of parameters) {
+    let paramsCode = "";
+    for (let param of parameters) {
       paramsCode += `
-      let ${param.name} = req.paramas.${param.name};
+      let ${param.name} = req.params.${param.name};
       `;
     }
 
     code += `
-        app.${method.toLowerCase()}('${endpoint}', (req, res) => {
-            ${paramsCode}
+      app.${method.toLowerCase()}('${endpoint}', (req, res) => {
+        ${paramsCode}
 
-            // Mock response
-            res.json(${JSON.stringify(response)});
-        });
-        `;
-    }
+        // Mock response
+        res.json(${JSON.stringify(response)});
+      });
+    `;
+  }
 
-    code += `
+  code += `
     const PORT = process.env.PORT || 5001;
     app.listen(PORT, () => console.log(\`Server running on port \${PORT}\`));
-    `;
+  `;
 
-    return code;
+  return code;
 }
 
 module.exports = {
-    codeGenerator,
+  codeGenerator,
 };
