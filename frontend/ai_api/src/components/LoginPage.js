@@ -89,5 +89,5 @@ function LoginPage() {
     </div>
   );
 }
-
+//export default Loginpage;
 export default LoginPage;

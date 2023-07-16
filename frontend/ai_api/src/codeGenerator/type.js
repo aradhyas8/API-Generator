@@ -1,0 +1,2 @@
+const express = require("express");
+const router = express.Router(); // middleware for handling errors/exceptions const asyncHandler = require('express-async-handler'); // Assuming you've appropriate Mongoose Model for each collection // PUT: /tasks/:id router.put("/tasks/:id", asyncHandler(async (req, res) => { const tasks = await Tasks.findByIdAndUpdate(req.params.id, req.body, { new: true }); res.json(tasks); })); module.exports = router;

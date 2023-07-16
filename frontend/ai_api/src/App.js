@@ -9,16 +9,14 @@ import ProjectCreation from './components/ProjectCreation';
 
 const App = () => {
   return (
-
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projectCreation" element={<ProjectCreation />} />
-        <Route path="/apiPage/:projectId" element={<APIPage />} />
-
-      </Routes>
-
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/projectCreation" element={<ProjectCreation />} />
+      <Route path="/apiPage/:projectId" element={<APIPage />} />
+      <Route path="/codeDisplay/:code" element={<CodeDisplay />} />
+    </Routes>
   );
 };
 
